@@ -84,6 +84,7 @@ const updateEmployee = [
 // Initializes the app by presenting menu options
 init();
 
+// Menu options
 function init() {
   inquirer.prompt(menu).then((response) => {
     if (response.menu === "View all departments") {
@@ -105,6 +106,7 @@ function init() {
   });
 }
 
+// Adds new department
 function addDepartment() {
   inquirer.prompt(addDepartmentQs).then((response) => {
     console.log(response);
@@ -112,6 +114,7 @@ function addDepartment() {
   });
 }
 
+// Adds new role
 function addRole() {
   inquirer.prompt(addRoleQs).then((response) => {
     console.log(response);
@@ -119,6 +122,7 @@ function addRole() {
   });
 }
 
+// Adds a new employee
 function addEmployee() {
   inquirer.prompt(addEmployeeQs).then((response) => {
     console.log(response);
