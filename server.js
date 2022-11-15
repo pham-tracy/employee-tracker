@@ -188,15 +188,30 @@ function addRole() {
 // Adds a new employee
 function addEmployee() {
   inquirer.prompt(addEmployeeQs).then((response) => {
-    const employee = new Employee(
-      response.employeeFirstName,
-      response.employeeLastName,
-      response.employeeRole,
-      response.employeeManager
+    db.query(
+      "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
+      [
+        response.employeeFirstName,
+        response.employeeLastName,
+        response.employeeRole,
+        response.employeeManager,
+      ],
+      function (err, response) {
+        if (err) throw err;
+        console.log("Employee added successfully");
+        init();
+      }
     );
-    allEmployees.push(employee);
-    console.log(allEmployees);
-    init();
+
+    // const employee = new Employee(
+    //   response.employeeFirstName,
+    //   response.employeeLastName,
+    //   response.employeeRole,
+    //   response.employeeManager
+    // );
+    // allEmployees.push(employee);
+    // console.log(allEmployees);
+    // init();
     // INSERT INTO employee (first_name, last_name, role_id, manager_id)
     // VALUES (response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager)
     // JOIN on roleID
