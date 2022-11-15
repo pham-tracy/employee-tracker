@@ -36,6 +36,7 @@ const menu = [
       "Add a role",
       "Add an employee",
       "Update an employee role",
+      // "Exit",
     ],
   },
 ];
@@ -119,23 +120,28 @@ function init() {
     } else if (response.menu === "Update an employee role") {
       console.log("update an employee role with SQL");
     }
+    // else if (response.menu === "Exit") {
+    //   db.end();
+    // }
     // console.log(response);
   });
 }
 
 // View all departments
 function viewDepts() {
-  db.query("SELECT * FROM department", function (err, response) {
-    console.table(response);
-    init();
-  });
+  db.query(
+    "SELECT department.id AS ID, department.department_name AS Department FROM department",
+    function (err, response) {
+      console.table(response);
+      init();
+    }
+  );
 }
 
 // View all roles
 function viewRoles() {
-  db.query("SELECT * FROM role", function (err, response) {
+  db.query("SELECT * from role", function (err, response) {
     console.table(response);
-    console.log("VIEW ALL Roles");
     init();
   });
 }
@@ -151,31 +157,30 @@ function viewEmployees() {
 // Adds new department
 function addDepartment() {
   inquirer.prompt(addDepartmentQs).then((response) => {
-    // const department = new Department(response.deptName);
     db.query(
       "INSERT INTO department (department_name) VALUES (?)",
       response.deptName,
       function (err, response) {
         if (err) return err;
-        console.log("Department added");
+        console.log("Department added successfully");
         init();
       }
     );
-    // allDepartments.push(department);
-
-    // console.table(allDepartments);å
-    // INSERT INTO department (department_name)
-    // VALUES (response)
   });
 }
 
 // Adds new role
 function addRole() {
   inquirer.prompt(addRoleQs).then((response) => {
-    console.log(response);
-    init();
-    // INSERT INTO role (title, salary, department_id)
-    // VALUES (response.roleName, response.roleSalary, response.roleDept)
+    db.query(
+      "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",
+      [response.roleName, response.roleSalary, response.roleDept],
+      function (err, response) {
+        if (err) throw err;
+        console.log("Role added successfully");
+        init();
+      }
+    );
     // JOIN on department ID
   });
 }
@@ -198,3 +203,6 @@ function addEmployee() {
     // JOIN on managerID to employeeID
   });
 }
+
+// updates employee roles
+function updateEmployeeRole() {}
