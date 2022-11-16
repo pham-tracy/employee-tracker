@@ -118,7 +118,6 @@ function init() {
     } else if (response.menu === "Exit") {
       db.end();
     }
-    // console.log(response);
   });
 }
 
@@ -214,7 +213,7 @@ function addEmployee() {
   });
 }
 
-// updates employee roles
+// Updates employee roles
 function updateEmployeeRole() {
   inquirer.prompt(updateEmployee).then((response) => {
     db.query(""),
