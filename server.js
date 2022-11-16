@@ -1,11 +1,6 @@
-const fs = require("fs");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const mysql = require("mysql2");
-const { connect } = require("http2");
-const Employee = require("./lib/Employee");
-const Department = require("./lib/Department");
-// const Employee = require("Employee");
 
 const allDepartments = [];
 const allRoles = [];
@@ -36,7 +31,7 @@ const menu = [
       "Add a role",
       "Add an employee",
       "Update an employee role",
-      // "Exit",
+      "Exit",
     ],
   },
 ];
@@ -61,9 +56,10 @@ const addRoleQs = [
     name: "roleSalary",
   },
   {
-    type: "input",
+    type: "list",
     message: "Which department does the role belong to?",
     name: "roleDept",
+    choices: allDepartments,
   },
 ];
 
@@ -79,23 +75,23 @@ const addEmployeeQs = [
     name: "employeeLastName",
   },
   {
-    type: "input",
+    type: "list",
     message: "What is the employee's role?",
-    name: "employeeRole",
+    name: allRoles,
   },
   {
-    type: "input",
+    type: "list",
     message: "Who is the employee's mananger?",
-    name: "employeeManager",
+    name: allEmployees,
   },
 ];
 
 const updateEmployee = [
   {
-    type: "input",
+    type: "list",
     message: "Which employee's role would you like to update?",
     name: "employeeFirstName",
-    //   choices: [pull employees from database]
+    choices: allEmployees,
   },
 ];
 
@@ -118,11 +114,10 @@ function init() {
     } else if (response.menu === "Add an employee") {
       addEmployee();
     } else if (response.menu === "Update an employee role") {
-      console.log("update an employee role with SQL");
+      updateEmployeeRole();
+    } else if (response.menu === "Exit") {
+      db.end();
     }
-    // else if (response.menu === "Exit") {
-    //   db.end();
-    // }
     // console.log(response);
   });
 }
@@ -140,18 +135,25 @@ function viewDepts() {
 
 // View all roles
 function viewRoles() {
-  db.query("SELECT * from role", function (err, response) {
-    console.table(response);
-    init();
-  });
+  db.query(
+    "SELECT role.id, role.title, department.department_name AS department, role.salary FROM role JOIN department ON role.department_id=department.id",
+    function (err, response) {
+      console.table(response);
+      init();
+    }
+  );
 }
 
 // View all employees
 function viewEmployees() {
-  db.query("SELECT * FROM employee", function (err, response) {
-    console.table(response);
-    init();
-  });
+  db.query(
+    "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, employee.manager_id AS manager FROM employee JOIN role ON employee.role_id=role.id JOIN department on role.department_id=department.id",
+    function (err, response) {
+      if (err) throw err;
+      console.table(response);
+      init();
+    }
+  );
 }
 
 // Adds new department
@@ -161,7 +163,7 @@ function addDepartment() {
       "INSERT INTO department (department_name) VALUES (?)",
       response.deptName,
       function (err, response) {
-        if (err) return err;
+        if (err) throw err;
         console.log("Department added successfully");
         init();
       }
@@ -181,7 +183,6 @@ function addRole() {
         init();
       }
     );
-    // JOIN on department ID
   });
 }
 
@@ -203,12 +204,6 @@ function addEmployee() {
       }
     );
 
-    // const employee = new Employee(
-    //   response.employeeFirstName,
-    //   response.employeeLastName,
-    //   response.employeeRole,
-    //   response.employeeManager
-    // );
     // allEmployees.push(employee);
     // console.log(allEmployees);
     // init();
@@ -220,4 +215,13 @@ function addEmployee() {
 }
 
 // updates employee roles
-function updateEmployeeRole() {}
+function updateEmployeeRole() {
+  inquirer.prompt(updateEmployee).then((response) => {
+    db.query(""),
+      function (err, response) {
+        if (err) throw err;
+        console.log("Employee's role updated successfully");
+        init();
+      };
+  });
+}
