@@ -6,7 +6,7 @@ const allDepartments = [];
 const allRoles = [];
 const allEmployees = [];
 
-// create the connection to database
+// Create the connection to database
 const db = mysql.createConnection(
   {
     host: "localhost",
@@ -36,6 +36,7 @@ const menu = [
   },
 ];
 
+// Questions to add a department
 const addDepartmentQs = [
   {
     type: "input",
@@ -44,6 +45,7 @@ const addDepartmentQs = [
   },
 ];
 
+// Questions to add a role
 const addRoleQs = [
   {
     type: "input",
@@ -59,10 +61,12 @@ const addRoleQs = [
     type: "list",
     message: "Which department does the role belong to?",
     name: "roleDept",
+    // this shows up as undefined
     choices: allDepartments,
   },
 ];
 
+// Questions to add an employee
 const addEmployeeQs = [
   {
     type: "input",
@@ -77,20 +81,23 @@ const addEmployeeQs = [
   {
     type: "list",
     message: "What is the employee's role?",
-    name: allRoles,
+    name: "employeeRole",
+    choices: allRoles,
   },
   {
     type: "list",
     message: "Who is the employee's mananger?",
-    name: allEmployees,
+    name: "employeeManager",
+    choices: allEmployees,
   },
 ];
 
+// Questions to update an employee
 const updateEmployee = [
   {
     type: "list",
     message: "Which employee's role would you like to update?",
-    name: "employeeFirstName",
+    name: "roleUpdate",
     choices: allEmployees,
   },
 ];
@@ -126,6 +133,10 @@ function viewDepts() {
   db.query(
     "SELECT department.id AS ID, department.department_name AS Department FROM department",
     function (err, response) {
+      if (err) throw err;
+      for (i = 0; i < response.length; i++) {
+        allDepartments.push(response[i].id + "" + response[i].name);
+      }
       console.table(response);
       init();
     }
@@ -137,6 +148,10 @@ function viewRoles() {
   db.query(
     "SELECT role.id, role.title, department.department_name AS department, role.salary FROM role JOIN department ON role.department_id=department.id",
     function (err, response) {
+      if (err) throw err;
+      for (i = 0; i < response.length; i++) {
+        allRoles.push(response[i].id + "" + response[i].title);
+      }
       console.table(response);
       init();
     }
@@ -224,3 +239,5 @@ function updateEmployeeRole() {
       };
   });
 }
+
+console.log(allDepartments);
