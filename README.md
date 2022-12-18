@@ -43,9 +43,15 @@ Proceed with connecting to the server by running:
 
 ### Video Walkthrough
 
-Video demo on how to use this application can be viewed here:
+Video demo on how to use this application can be viewed here: https://watch.screencastify.com/v/VIDFZDkni9cqjMXjIw2W.
 
 ### Screenshots
+
+CLI Menu Prompts:
+
+![Employee Tracker Menu Options](./assets/images/Employee%20Tracker_Menu.png)
+
+![Employee Tracker View Depts](./assets/images/Employee%20Tracker_View%20Depts.png)
 
 ## License
 
