@@ -170,6 +170,40 @@ function viewEmployees() {
   );
 }
 
+function currentRoles() {
+  db.query("SELECT * FROM role", (err, input) => {
+    if (err) throw err;
+    for (i = 0; i < input.length; i++) {
+      allRoles.push(input[i].id + " " + input[i].title);
+    }
+  });
+  return allRoles;
+}
+
+// function to get choices of employees
+function currentEmployees() {
+  db.query("SELECT * FROM employee", (err, input) => {
+    if (err) throw err;
+    for (i = 0; i < input.length; i++) {
+      allEmployees.push(
+        input[i].id + " " + input[i].first_name + " " + input[i].last_name
+      );
+    }
+  });
+  return allEmployees;
+}
+
+// function to get choices of departments
+function currentDepartments() {
+  db.query("SELECT * FROM department", (err, input) => {
+    if (err) throw err;
+    for (i = 0; i < input.length; i++) {
+      allDepartments.push(input[i].id + " " + input[i].department_name);
+    }
+  });
+  return allDepartments;
+}
+
 // Adds new department
 function addDepartment() {
   inquirer.prompt(addDepartmentQs).then((response) => {
@@ -187,13 +221,16 @@ function addDepartment() {
 
 // Adds new role
 function addRole() {
+  currentDepartments();
   inquirer.prompt(addRoleQs).then((response) => {
+    var departmentIdResponse = response.roleDept.split(" ");
     db.query(
       "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",
-      [response.roleName, response.roleSalary, response.roleDept],
+      [response.roleName, response.roleSalary, departmentIdResponse[0]],
       function (err, response) {
         if (err) throw err;
         console.log("Role added successfully");
+
         init();
       }
     );
