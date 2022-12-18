@@ -2,9 +2,9 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 const mysql = require("mysql2");
 
-const allDepartments = [];
-const allRoles = [];
-const allEmployees = [];
+var allDepartments;
+var allRoles;
+var allEmployees;
 
 // Create the connection to database
 const db = mysql.createConnection(
@@ -16,6 +16,43 @@ const db = mysql.createConnection(
   },
   console.log("Connected to the employee_db database")
 );
+
+function currentRoles() {
+  allRoles = [];
+  db.query("SELECT * FROM role", (err, input) => {
+    if (err) throw err;
+    for (i = 0; i < input.length; i++) {
+      allRoles.push(input[i].id + " " + input[i].title);
+    }
+  });
+  return allRoles;
+}
+
+// function to get choices of employees
+function currentEmployees() {
+  allEmployees = [];
+  db.query("SELECT * FROM employee", (err, input) => {
+    if (err) throw err;
+    for (i = 0; i < input.length; i++) {
+      allEmployees.push(
+        input[i].id + " " + input[i].first_name + " " + input[i].last_name
+      );
+    }
+  });
+  return allEmployees;
+}
+
+// function to get choices of departments
+function currentDepartments() {
+  allDepartments = [];
+  db.query("SELECT * FROM department", (err, input) => {
+    if (err) throw err;
+    for (i = 0; i < input.length; i++) {
+      allDepartments.push(input[i].id + " " + input[i].department_name);
+    }
+  });
+  return allDepartments;
+}
 
 // Questions for adding department
 const menu = [
@@ -61,7 +98,6 @@ const addRoleQs = [
     type: "list",
     message: "Which department does the role belong to?",
     name: "roleDept",
-    // this shows up as undefined
     choices: allDepartments,
   },
 ];
@@ -95,10 +131,21 @@ const addEmployeeQs = [
 // Questions to update an employee
 const updateEmployee = [
   {
+    type: "input",
+    message: "What is your full name?",
+    name: "name",
+  },
+  {
     type: "list",
     message: "Which employee's role would you like to update?",
-    name: "roleUpdate",
+    name: "employeeFirstName",
     choices: allEmployees,
+  },
+  {
+    type: "list",
+    message: "What is the new role?",
+    name: "newRole",
+    choices: allRoles,
   },
 ];
 
@@ -134,9 +181,9 @@ function viewDepts() {
     "SELECT department.id AS ID, department.department_name AS Department FROM department",
     function (err, response) {
       if (err) throw err;
-      for (i = 0; i < response.length; i++) {
-        allDepartments.push(response[i].id + "" + response[i].name);
-      }
+      // for (i = 0; i < response.length; i++) {
+      //   allDepartments.push(response[i].id + "" + response[i].name);
+      // }
       console.table(response);
       init();
     }
@@ -149,9 +196,9 @@ function viewRoles() {
     "SELECT role.id, role.title, department.department_name AS department, role.salary FROM role JOIN department ON role.department_id=department.id",
     function (err, response) {
       if (err) throw err;
-      for (i = 0; i < response.length; i++) {
-        allRoles.push(response[i].id + "" + response[i].title);
-      }
+      // for (i = 0; i < response.length; i++) {
+      //   allRoles.push(response[i].id + "" + response[i].title);
+      // }
       console.table(response);
       init();
     }
@@ -168,40 +215,6 @@ function viewEmployees() {
       init();
     }
   );
-}
-
-function currentRoles() {
-  db.query("SELECT * FROM role", (err, input) => {
-    if (err) throw err;
-    for (i = 0; i < input.length; i++) {
-      allRoles.push(input[i].id + " " + input[i].title);
-    }
-  });
-  return allRoles;
-}
-
-// function to get choices of employees
-function currentEmployees() {
-  db.query("SELECT * FROM employee", (err, input) => {
-    if (err) throw err;
-    for (i = 0; i < input.length; i++) {
-      allEmployees.push(
-        input[i].id + " " + input[i].first_name + " " + input[i].last_name
-      );
-    }
-  });
-  return allEmployees;
-}
-
-// function to get choices of departments
-function currentDepartments() {
-  db.query("SELECT * FROM department", (err, input) => {
-    if (err) throw err;
-    for (i = 0; i < input.length; i++) {
-      allDepartments.push(input[i].id + " " + input[i].department_name);
-    }
-  });
-  return allDepartments;
 }
 
 // Adds new department
@@ -259,7 +272,6 @@ function addEmployee() {
       }
     );
   });
-  // TODO: Still doesnt population manager list
 }
 
 // Updates employee roles

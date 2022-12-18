@@ -16,4 +16,4 @@ INSERT INTO employee (first_name, last_name, role_id, manager_id)
 -- VALUES (response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager)
 -- JOIN on roleID
 -- JOIN on managerID to employeeID
-VALUES ("Jane", "Doe", 2, 2);
+VALUES ("Jane", "Doe", 1, 1);
