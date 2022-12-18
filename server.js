@@ -17,6 +17,87 @@ const db = mysql.createConnection(
   console.log("Connected to the employee_db database")
 );
 
+// Questions for adding department
+const menu = [
+  {
+    type: "list",
+    message: "What action would you like to take?",
+    name: "menu",
+    choices: [
+      "View all departments",
+      "View all roles",
+      "View all employees",
+      "Add a department",
+      "Add a role",
+      "Add an employee",
+      "Update an employee role",
+      "Exit",
+    ],
+  },
+];
+
+// Initializes the app by presenting menu options
+init();
+
+// Menu options
+function init() {
+  inquirer.prompt(menu).then((response) => {
+    if (response.menu === "View all departments") {
+      viewDepts();
+    } else if (response.menu === "View all roles") {
+      viewRoles();
+    } else if (response.menu === "View all employees") {
+      viewEmployees();
+    } else if (response.menu === "Add a department") {
+      addDepartment();
+    } else if (response.menu === "Add a role") {
+      addRole();
+    } else if (response.menu === "Add an employee") {
+      addEmployee();
+    } else if (response.menu === "Update an employee role") {
+      updateEmployeeRole();
+    } else if (response.menu === "Exit") {
+      db.end();
+    }
+  });
+}
+
+// View all departments
+function viewDepts() {
+  db.query(
+    "SELECT department.id AS ID, department.department_name AS Department FROM department",
+    function (err, response) {
+      if (err) throw err;
+      console.table(response);
+      init();
+    }
+  );
+}
+
+// View all roles
+function viewRoles() {
+  db.query(
+    "SELECT role.id, role.title, department.department_name AS department, role.salary FROM role JOIN department ON role.department_id=department.id",
+    function (err, response) {
+      if (err) throw err;
+      console.table(response);
+      init();
+    }
+  );
+}
+
+// View all employees
+function viewEmployees() {
+  db.query(
+    "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, employee.manager_id AS manager FROM employee JOIN role ON employee.role_id=role.id JOIN department on role.department_id=department.id",
+    function (err, response) {
+      if (err) throw err;
+      console.table(response);
+      init();
+    }
+  );
+}
+
 function currentRoles() {
   allRoles = [];
   db.query("SELECT * FROM role", (err, input) => {
@@ -54,171 +135,16 @@ function currentDepartments() {
   return allDepartments;
 }
 
-// Questions for adding department
-const menu = [
-  {
-    type: "list",
-    message: "What action would you like to take?",
-    name: "menu",
-    choices: [
-      "View all departments",
-      "View all roles",
-      "View all employees",
-      "Add a department",
-      "Add a role",
-      "Add an employee",
-      "Update an employee role",
-      "Exit",
-    ],
-  },
-];
-
-// Questions to add a department
-const addDepartmentQs = [
-  {
-    type: "input",
-    message: "What is the name of the department?",
-    name: "deptName",
-  },
-];
-
-// Questions to add a role
-const addRoleQs = [
-  {
-    type: "input",
-    message: "What is the name of the role?",
-    name: "roleName",
-  },
-  {
-    type: "input",
-    message: "What is the salary of the role?",
-    name: "roleSalary",
-  },
-  {
-    type: "list",
-    message: "Which department does the role belong to?",
-    name: "roleDept",
-    choices: allDepartments,
-  },
-];
-
-// Questions to add an employee
-const addEmployeeQs = [
-  {
-    type: "input",
-    message: "What is the employee's first name?",
-    name: "employeeFirstName",
-  },
-  {
-    type: "input",
-    message: "What is the employee's last name?",
-    name: "employeeLastName",
-  },
-  {
-    type: "list",
-    message: "What is the employee's role?",
-    name: "employeeRole",
-    choices: allRoles,
-  },
-  {
-    type: "list",
-    message: "Who is the employee's mananger?",
-    name: "employeeManager",
-    choices: allEmployees,
-  },
-];
-
-// Questions to update an employee
-const updateEmployee = [
-  {
-    type: "input",
-    message: "What is your full name?",
-    name: "name",
-  },
-  {
-    type: "list",
-    message: "Which employee's role would you like to update?",
-    name: "employeeFirstName",
-    choices: allEmployees,
-  },
-  {
-    type: "list",
-    message: "What is the new role?",
-    name: "newRole",
-    choices: allRoles,
-  },
-];
-
-// Initializes the app by presenting menu options
-init();
-
-// Menu options
-function init() {
-  inquirer.prompt(menu).then((response) => {
-    if (response.menu === "View all departments") {
-      viewDepts();
-    } else if (response.menu === "View all roles") {
-      viewRoles();
-    } else if (response.menu === "View all employees") {
-      viewEmployees();
-    } else if (response.menu === "Add a department") {
-      addDepartment();
-    } else if (response.menu === "Add a role") {
-      addRole();
-    } else if (response.menu === "Add an employee") {
-      addEmployee();
-    } else if (response.menu === "Update an employee role") {
-      updateEmployeeRole();
-    } else if (response.menu === "Exit") {
-      db.end();
-    }
-  });
-}
-
-// View all departments
-function viewDepts() {
-  db.query(
-    "SELECT department.id AS ID, department.department_name AS Department FROM department",
-    function (err, response) {
-      if (err) throw err;
-      // for (i = 0; i < response.length; i++) {
-      //   allDepartments.push(response[i].id + "" + response[i].name);
-      // }
-      console.table(response);
-      init();
-    }
-  );
-}
-
-// View all roles
-function viewRoles() {
-  db.query(
-    "SELECT role.id, role.title, department.department_name AS department, role.salary FROM role JOIN department ON role.department_id=department.id",
-    function (err, response) {
-      if (err) throw err;
-      // for (i = 0; i < response.length; i++) {
-      //   allRoles.push(response[i].id + "" + response[i].title);
-      // }
-      console.table(response);
-      init();
-    }
-  );
-}
-
-// View all employees
-function viewEmployees() {
-  db.query(
-    "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, employee.manager_id AS manager FROM employee JOIN role ON employee.role_id=role.id JOIN department on role.department_id=department.id",
-    function (err, response) {
-      if (err) throw err;
-      console.table(response);
-      init();
-    }
-  );
-}
-
 // Adds new department
 function addDepartment() {
+  // Questions to add a department
+  const addDepartmentQs = [
+    {
+      type: "input",
+      message: "What is the name of the department?",
+      name: "deptName",
+    },
+  ];
   inquirer.prompt(addDepartmentQs).then((response) => {
     db.query(
       "INSERT INTO department (department_name) VALUES (?)",
@@ -235,6 +161,27 @@ function addDepartment() {
 // Adds new role
 function addRole() {
   currentDepartments();
+
+  // Questions to add a role
+  const addRoleQs = [
+    {
+      type: "input",
+      message: "What is the name of the role?",
+      name: "roleName",
+    },
+    {
+      type: "input",
+      message: "What is the salary of the role?",
+      name: "roleSalary",
+    },
+    {
+      type: "list",
+      message: "Which department does the role belong to?",
+      name: "roleDept",
+      choices: allDepartments,
+    },
+  ];
+
   inquirer.prompt(addRoleQs).then((response) => {
     var departmentIdResponse = response.roleDept.split(" ");
     db.query(
@@ -254,6 +201,33 @@ function addRole() {
 function addEmployee() {
   currentRoles();
   currentEmployees();
+
+  // Questions to add an employee
+  const addEmployeeQs = [
+    {
+      type: "input",
+      message: "What is the employee's first name?",
+      name: "employeeFirstName",
+    },
+    {
+      type: "input",
+      message: "What is the employee's last name?",
+      name: "employeeLastName",
+    },
+    {
+      type: "list",
+      message: "What is the employee's role?",
+      name: "employeeRole",
+      choices: allRoles,
+    },
+    {
+      type: "list",
+      message: "Who is the employee's mananger?",
+      name: "employeeManager",
+      choices: allEmployees,
+    },
+  ];
+
   inquirer.prompt(addEmployeeQs).then((response) => {
     var roleIdResponse = response.employeeRole.split(" ");
     var managerIdResponse = response.employeeManager.split(" ");
@@ -278,6 +252,28 @@ function addEmployee() {
 function updateEmployeeRole() {
   currentRoles();
   currentEmployees();
+
+  // Questions to update an employee
+  const updateEmployee = [
+    {
+      type: "input",
+      message: "What is your full name?",
+      name: "name",
+    },
+    {
+      type: "list",
+      message: "Which employee's role would you like to update?",
+      name: "employeeFirstName",
+      choices: allEmployees,
+    },
+    {
+      type: "list",
+      message: "What is the new role?",
+      name: "newRole",
+      choices: allRoles,
+    },
+  ];
+
   inquirer.prompt(updateEmployee).then((response) => {
     var employeeNameResponse = response.employeeFirstName.split(" ");
     var newRoleResponse = response.newRole.split(" ");
