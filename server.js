@@ -239,14 +239,18 @@ function addRole() {
 
 // Adds a new employee
 function addEmployee() {
+  currentRoles();
+  currentEmployees();
   inquirer.prompt(addEmployeeQs).then((response) => {
+    var roleIdResponse = response.employeeRole.split(" ");
+    var managerIdResponse = response.employeeManager.split(" ");
     db.query(
       "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
       [
         response.employeeFirstName,
         response.employeeLastName,
-        response.employeeRole,
-        response.employeeManager,
+        roleIdResponse[0],
+        managerIdResponse[0],
       ],
       function (err, response) {
         if (err) throw err;
@@ -255,6 +259,7 @@ function addEmployee() {
       }
     );
   });
+  // TODO: Still doesnt population manager list
 }
 
 // Updates employee roles
