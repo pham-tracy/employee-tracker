@@ -52,6 +52,7 @@ CLI Menu Prompts:
 ![Employee Tracker Menu Options](./assets/images/Employee%20Tracker_Menu.png)
 
 View All Departments:
+
 ![Employee Tracker View Depts](./assets/images/Employee%20Tracker_View%20Depts.png)
 
 ## License
