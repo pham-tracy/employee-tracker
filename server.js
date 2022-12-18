@@ -89,7 +89,7 @@ function viewRoles() {
 // View all employees
 function viewEmployees() {
   db.query(
-    "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, employee.manager_id AS manager FROM employee JOIN role ON employee.role_id=role.id JOIN department on role.department_id=department.id",
+    "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary, CONCAT(e.first_name, ' ' , e.last_name) AS manager FROM employee JOIN role ON employee.role_id=role.id JOIN department on role.department_id=department.id LEFT JOIN employee e on employee.manager_id = e.id",
     function (err, response) {
       if (err) throw err;
       console.table(response);
@@ -262,7 +262,7 @@ function updateEmployeeRole() {
     },
     {
       type: "list",
-      message: "Which employee's role would you like to update?",
+      message: "Which employee's role would you like to updateß?",
       name: "employeeFirstName",
       choices: allEmployees,
     },
