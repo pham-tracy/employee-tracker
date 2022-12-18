@@ -264,13 +264,22 @@ function addEmployee() {
 
 // Updates employee roles
 function updateEmployeeRole() {
+  currentRoles();
+  currentEmployees();
   inquirer.prompt(updateEmployee).then((response) => {
-    db.query(""),
+    var employeeNameResponse = response.employeeFirstName.split(" ");
+    var newRoleResponse = response.newRole.split(" ");
+    console.log(employeeNameResponse);
+    console.log(newRoleResponse);
+    db.query(
+      "UPDATE employee SET role_id=? WHERE first_name=?",
+      [newRoleResponse[0], employeeNameResponse[1]],
       function (err, response) {
         if (err) throw err;
         console.log("Employee's role updated successfully");
         init();
-      };
+      }
+    );
   });
 }
 
