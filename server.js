@@ -254,14 +254,6 @@ function addEmployee() {
         init();
       }
     );
-
-    // allEmployees.push(employee);
-    // console.log(allEmployees);
-    // init();
-    // INSERT INTO employee (first_name, last_name, role_id, manager_id)
-    // VALUES (response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager)
-    // JOIN on roleID
-    // JOIN on managerID to employeeID
   });
 }
 
