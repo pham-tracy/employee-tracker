@@ -282,5 +282,3 @@ function updateEmployeeRole() {
     );
   });
 }
-
-console.log(allDepartments);
