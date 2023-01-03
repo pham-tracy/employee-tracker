@@ -1,4 +1,4 @@
-# employee-tracker [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Employee Tracker [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Description
 
@@ -21,7 +21,7 @@ This application was created with Node.js, Inquirer, MySQL, and Console.Table.
 
 Clone the repo by running the following in your command-line interface:
 
-    git@github.com:pham-tracy/employee-tracker.git
+    git clone git@github.com:pham-tracy/employee-tracker.git
 
 Install NPM packages:
 
